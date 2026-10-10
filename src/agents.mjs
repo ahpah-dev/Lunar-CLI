@@ -146,12 +146,16 @@ export class Extensions {
     return this.agentsByName[name] ?? null;
   }
 
+  static agentMode(a) {
+    return a.mode ?? a.meta?.mode ?? 'primary';
+  }
+
   primaryAgents() {
-    return Object.values(this.agentsByName).filter((a) => (a.mode ?? 'primary') === 'primary');
+    return Object.values(this.agentsByName).filter((a) => Extensions.agentMode(a) === 'primary');
   }
 
   subagents() {
-    return Object.values(this.agentsByName).filter((a) => (a.mode ?? 'primary') === 'subagent');
+    return Object.values(this.agentsByName).filter((a) => Extensions.agentMode(a) === 'subagent');
   }
 
   getCommand(name) {
@@ -168,7 +172,22 @@ export class Extensions {
 }
 
 export function resolveAgent(name, extensions) {
-  return extensions.getAgent(name) ?? BUILTIN_AGENTS.build;
+  const found = extensions.getAgent(name) ?? BUILTIN_AGENTS.build;
+  if (found.prompt !== undefined) return found;
+  const meta = found.meta ?? {};
+  const num = (v) => (v === undefined || v === null || v === '' ? null : Number(v));
+  const list = (v) => (Array.isArray(v) ? v : String(v ?? '').split(',').map((t) => t.trim()).filter(Boolean));
+  return {
+    name: found.name,
+    description: found.description ?? '',
+    mode: meta.mode ?? 'primary',
+    permission: meta.permission ?? null,
+    model: meta.model ?? null,
+    temperature: num(meta.temperature),
+    tools: meta.tools !== undefined ? list(meta.tools) : null,
+    steps: num(meta.steps),
+    prompt: found.body ?? '',
+  };
 }
 
 export function expandCommand(cmd, args) {

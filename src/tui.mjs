@@ -4,7 +4,7 @@ import path from 'node:path';
 import { runAgent, compactNow } from './agent.mjs';
 import { Session } from './session.mjs';
 import { banner3D, moonHeader, c, glow, divider, toolCallLine, toolResultLine, permissionPrompt, helpDialog, statusLine, sessionLine, pad, P } from './theme.mjs';
-import { expandCommand } from './agents.mjs';
+import { expandCommand, resolveAgent } from './agents.mjs';
 import { appendMemory, initProject, loadMemory } from './memory.mjs';
 import { listProviders } from './providers.mjs';
 
@@ -332,7 +332,7 @@ export async function startTUI(env) {
       const a = extensions.getAgent(arg);
       if (a) {
         currentAgent = arg;
-        mode = (a.mode === 'plan' || a.permission?.edit === 'deny') ? 'plan' : 'build';
+        mode = resolveAgent(arg, extensions).mode === 'plan' ? 'plan' : 'build';
         console.log(c.success(`  ✦ agent → ${arg} (${mode})`));
       } else {
         console.log(c.error(`  unknown agent: ${arg}`));
@@ -604,7 +604,7 @@ export async function startTUI(env) {
       const idx = agents.findIndex((a) => a.name === currentAgent);
       const next = agents[(idx + 1) % agents.length];
       currentAgent = next.name;
-      mode = (next.mode === 'plan' || next.permission?.edit === 'deny') ? 'plan' : 'build';
+      mode = resolveAgent(next.name, extensions).mode === 'plan' ? 'plan' : 'build';
       console.log(c.success(`  ✦ agent → ${currentAgent} (${mode})`));
       console.log();
       rl.setPrompt(promptStr());
