@@ -2,6 +2,11 @@
   "name": "lunar",
   "version": "2.3.0",
   "description": "LUNAR 🌙 — Moonlit Terminal AI Coding Assistant. Single file. Zero dependencies.",
+  "homepage": "https://lunar-cli.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ahpah-dev/Lunar-CLI.git"
+  },
   "type": "module",
   "main": "./lunar.mjs",
   "bin": {

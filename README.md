@@ -1,7 +1,8 @@
 # LUNAR 🌙
 ### *Moonlit Terminal AI Coding Assistant*
 
-> **Single File · Zero Dependencies · Node 18+ · Multi-Provider · Surgical Code Editing**
+> **Single File · Zero Dependencies · Node 18+ · Multi-Provider · Surgical Code Editing**  
+> 🌐 **Live Website**: [https://lunar-cli.vercel.app](https://lunar-cli.vercel.app)
 
 ```
   ██╗     ██╗   ██╗ ███╗   ██╗ █████╗ ██████╗ 
