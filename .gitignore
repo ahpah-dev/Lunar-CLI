@@ -1,18 +1,12 @@
-# Dependencies
 node_modules/
-
-# Environment and secrets
-.env*
-*.pem
-*.key
-secrets/
-
-# Logs & temp
+.lunar/
 *.log
-npm-debug.log*
-*.tmp
 .DS_Store
 Thumbs.db
-.vercel/
-
-.vercel
+# lunar.json may contain API keys — keep it local
+lunar.json
+.lunar-share-*.md
+.lunar-*.md
+.env
+.env.*
+!.env.example

@@ -1,43 +1,29 @@
 {
-  "name": "lunar",
-  "version": "2.3.0",
-  "description": "LUNAR 🌙 — Moonlit Terminal AI Coding Assistant. Single file. Zero dependencies.",
-  "homepage": "https://lunar-cli.vercel.app",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ahpah-dev/Lunar-CLI.git"
-  },
+  "name": "lunar-cli",
+  "version": "3.0.0",
+  "description": "LUNAR — lunar-themed agentic coding CLI (OpenCode-class)",
   "type": "module",
-  "main": "./lunar.mjs",
+  "license": "MIT",
   "bin": {
-    "lunar": "./lunar.mjs"
+    "lunarcode": "./bin/lunarcode.mjs"
   },
   "engines": {
     "node": ">=18"
   },
-  "scripts": {
-    "start": "node lunar.mjs",
-    "doctor": "node lunar.mjs doctor",
-    "setup": "node lunar.mjs setup",
-    "test": "node lunar.mjs doctor"
-  },
   "files": [
-    "lunar.mjs",
-    "lunar",
-    "lunar.cmd",
-    "LICENSE",
-    "LUNAR.md",
-    "README.md",
-    ".lunarignore"
+    "bin",
+    "src"
   ],
-  "keywords": [
-    "lunar",
-    "ai",
-    "agent",
-    "cli",
-    "terminal",
-    "coding-assistant",
-    "zero-dependencies"
-  ],
-  "license": "MIT"
+  "scripts": {
+    "start": "node bin/lunarcode.mjs",
+    "lunarcode": "node bin/lunarcode.mjs"
+  },
+  "dependencies": {
+    "boxen": "^8.0.1",
+    "chalk": "^5.3.0",
+    "commander": "^14.0.0",
+    "figlet": "^1.8.0",
+    "gradient-string": "^3.0.0",
+    "ora": "^8.1.1"
+  }
 }
