@@ -174,6 +174,7 @@ Lunar/
 ├── lunar          # Linux/macOS executable wrapper
 ├── lunar.cmd      # Windows executable wrapper
 ├── package.json   # Package metadata and scripts
+├── LICENSE        # MIT License
 ├── LUNAR.md       # Project guide and instructions
 ├── .lunarignore   # Patterns ignored during file searches
 └── README.md      # Documentation
