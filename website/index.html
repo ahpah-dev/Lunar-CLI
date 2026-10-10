@@ -8,14 +8,15 @@
   <meta property="og:title" content="LUNAR CLI — Moonlit Terminal AI Coding Assistant">
   <meta property="og:description" content="Zero npm dependencies. 95 KB footprint. Surgical atomic edits. Built for developers who demand speed without terminal bloat.">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://lunar-cli.vercel.app">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌙</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Deep Space Canvas -->
+  <!-- Deep Space Canvas with Twinkling Stars & Meteors -->
   <canvas id="starfield"></canvas>
   <div class="ambient-nebula ambient-top"></div>
   <div class="ambient-nebula ambient-bottom"></div>
@@ -31,22 +32,27 @@
       <nav class="nav-menu">
         <a href="#features" class="nav-link">Features</a>
         <a href="#simulator" class="nav-link">Terminal Simulator</a>
+        <a href="#anatomy" class="nav-link">Architecture</a>
         <a href="#cards" class="nav-link">Visual Cards</a>
+        <a href="#personas" class="nav-link">Personas</a>
         <a href="#benchmarks" class="nav-link">Benchmarks</a>
         <a href="#quickstart" class="nav-link">Quickstart</a>
       </nav>
 
       <div class="header-actions">
-        <div class="live-phase-badge" id="headerPhaseBadge" title="Live Synodic Moon Phase">
+        <div class="live-phase-badge" id="headerPhaseBadge" title="Live Astronomical Synodic Moon Phase">
           <span class="phase-glyph" id="headerPhaseGlyph">🌖</span>
           <span class="phase-name" id="headerPhaseName">Waxing Gibbous</span>
         </div>
+        <button class="btn-shortcuts" id="openShortcutsBtn" title="Keyboard Shortcuts (Press ?)">
+          <kbd>?</kbd>
+        </button>
         <a href="https://github.com/ahpah-dev/Lunar-CLI" target="_blank" rel="noopener noreferrer" class="btn-github">
           <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
             <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
           </svg>
           <span>Star on GitHub</span>
-          <span class="badge-repo">v2.3.0</span>
+          <span class="badge-repo" id="gitHubStars">★ 1</span>
         </a>
       </div>
     </div>
@@ -92,7 +98,7 @@
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
             <a href="#quickstart" class="btn btn-secondary">
-              <span>Read Documentation</span>
+              <span>Quickstart Guide</span>
             </a>
           </div>
         </div>
@@ -123,7 +129,7 @@
 
       <!-- Hero Astronomical Orb & Widget -->
       <div class="hero-visual">
-        <div class="moon-orb-container">
+        <div class="moon-orb-container" id="moonOrbWrapper">
           <div class="moon-orb-glow"></div>
           <div class="moon-orb" id="moonOrbVisual">
             <div class="crater crater-1"></div>
@@ -134,13 +140,16 @@
           </div>
           <div class="orbital-ring ring-1"></div>
           <div class="orbital-ring ring-2"></div>
+          <div class="orbital-particle p1"></div>
+          <div class="orbital-particle p2"></div>
+          <div class="orbital-particle p3"></div>
         </div>
 
-        <div class="celestial-card">
+        <div class="celestial-card spotlight-card">
           <div class="celestial-card-header">
             <span class="celestial-icon">🔭</span>
             <span class="celestial-title">ASTRONOMICAL ENGINE</span>
-            <span class="celestial-live">LIVE</span>
+            <span class="celestial-live">LIVE SYNC</span>
           </div>
           <div class="celestial-card-body">
             <div class="celestial-row">
@@ -169,7 +178,7 @@
   <section class="section simulator-section" id="simulator">
     <div class="container">
       <div class="section-header text-center">
-        <div class="section-tag">INTERACTIVE EXPERIENCE</div>
+        <div class="section-tag">INTERACTIVE TERMINAL</div>
         <h2 class="section-title">See Lunar in Action</h2>
         <p class="section-subtitle">
           Experience the real-time celestial gradients, animated orbit spinners, 
@@ -219,14 +228,90 @@
 
         <!-- Terminal Input Bar for Interactive REPL mode -->
         <div class="terminal-repl-bar" id="terminalReplBar" style="display: none;">
-          <span class="term-prompt">lunar ❯</span>
-          <input type="text" id="termInput" placeholder="Try typing: doctor, phase, todos, help, or clear..." autocomplete="off" spellcheck="false">
-          <button id="termSendBtn" class="btn-send">Run</button>
+          <div class="repl-suggestion-chips" id="replSuggestionChips">
+            <span class="chip-label">Quick run:</span>
+            <button class="chip-btn" data-run="doctor">doctor</button>
+            <button class="chip-btn" data-run="phase">phase</button>
+            <button class="chip-btn" data-run="todos">todos</button>
+            <button class="chip-btn" data-run="models">models</button>
+            <button class="chip-btn" data-run="git status">git status</button>
+            <button class="chip-btn" data-run="help">help</button>
+            <button class="chip-btn" data-run="clear">clear</button>
+          </div>
+          <div class="repl-input-row">
+            <span class="term-prompt">lunar ❯</span>
+            <input type="text" id="termInput" placeholder="Type a command or pick a chip above..." autocomplete="off" spellcheck="false">
+            <button id="termSendBtn" class="btn-send">Run</button>
+          </div>
         </div>
       </div>
 
       <div class="terminal-hints">
-        <span>💡 In <strong>Interactive REPL</strong> mode, try commands like <code>doctor</code>, <code>phase</code>, <code>todos</code>, <code>help</code>, or <code>clear</code>.</span>
+        <span>💡 In <strong>Interactive REPL</strong> mode, use the chips above or type <code>doctor</code>, <code>phase</code>, <code>todos</code>, <code>models</code>, <code>help</code>, or <code>clear</code>.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Architecture & Single-File Anatomy -->
+  <section class="section anatomy-section" id="anatomy">
+    <div class="container">
+      <div class="section-header text-center">
+        <div class="section-tag">ARCHITECTURAL PURITY</div>
+        <h2 class="section-title">Anatomy of a 95 KB Agent</h2>
+        <p class="section-subtitle">
+          How Lunar delivers state-of-the-art autonomous capabilities in a single clean file 
+          without pulling in a single npm dependency.
+        </p>
+      </div>
+
+      <div class="anatomy-grid">
+        <div class="anatomy-card spotlight-card">
+          <div class="anatomy-num">01</div>
+          <div class="anatomy-icon">🌒</div>
+          <h3 class="anatomy-title">Astronomical Engine</h3>
+          <p class="anatomy-desc">Calculates real-time synodic moon age against astronomical ephemeris (29.53058867 day cycle), rendering illuminated glyphs and 24-bit TrueColor terminal gradients.</p>
+          <div class="anatomy-badge">Native Math &amp; ANSI Sequences</div>
+        </div>
+
+        <div class="anatomy-card spotlight-card">
+          <div class="anatomy-num">02</div>
+          <div class="anatomy-icon">⚡</div>
+          <h3 class="anatomy-title">Surgical Replacement Core</h3>
+          <p class="anatomy-desc">Uses contiguous line offset targeting with automated unified diff generation. Computes red/green previews and applies atomic writes without risking hallucinated code overwrites.</p>
+          <div class="anatomy-badge">Native fs &amp; child_process</div>
+        </div>
+
+        <div class="anatomy-card spotlight-card">
+          <div class="anatomy-num">03</div>
+          <div class="anatomy-icon">🪐</div>
+          <h3 class="anatomy-title">Multi-Provider Gateway</h3>
+          <p class="anatomy-desc">Universal HTTP SSE client connecting seamlessly to OpenRouter, Ollama, local 9Router SQLite databases, and OpenAI-compatible endpoints with auto-retry and streaming.</p>
+          <div class="anatomy-badge">Native https &amp; node:sqlite</div>
+        </div>
+
+        <div class="anatomy-card spotlight-card">
+          <div class="anatomy-num">04</div>
+          <div class="anatomy-icon">📋</div>
+          <h3 class="anatomy-title">Autonomous Flight Plan</h3>
+          <p class="anatomy-desc">Maintains structured multi-step flight plans with ASCII trajectory progress bars (<code>[████░░]</code>) and live step transitions keeping long-running refactors on course.</p>
+          <div class="anatomy-badge">Dynamic State Machine</div>
+        </div>
+
+        <div class="anatomy-card spotlight-card">
+          <div class="anatomy-num">05</div>
+          <div class="anatomy-icon">🛡️</div>
+          <h3 class="anatomy-title">Permission Shield &amp; Modals</h3>
+          <p class="anatomy-desc">Interactive raw-mode terminal UI providing arrow-key navigation, instant search filtering, and multi-choice approval prompts (<code>[y]</code> Approve, <code>[n]</code> Deny, <code>[a]</code> YOLO).</p>
+          <div class="anatomy-badge">Native readline &amp; rawMode</div>
+        </div>
+
+        <div class="anatomy-card spotlight-card">
+          <div class="anatomy-num">06</div>
+          <div class="anatomy-icon">↩️</div>
+          <h3 class="anatomy-title">Time Machine Checkpoints</h3>
+          <p class="anatomy-desc">Every write or surgical edit creates a timestamped copy in <code>.lunar/backups/</code> before touching files. Any change can be instantly reverted with <code>/undo</code>.</p>
+          <div class="anatomy-badge">Zero-Loss Rollback Stack</div>
+        </div>
       </div>
     </div>
   </section>
@@ -245,7 +330,7 @@
 
       <div class="cards-grid">
         <!-- Card 1: Surgical Edit -->
-        <div class="action-card-preview">
+        <div class="action-card-preview spotlight-card">
           <div class="card-preview-header edit-theme">
             <span class="card-icon">⚡</span>
             <span class="card-title">SURGICAL EDIT</span>
@@ -266,7 +351,7 @@
         </div>
 
         <!-- Card 2: Write File -->
-        <div class="action-card-preview">
+        <div class="action-card-preview spotlight-card">
           <div class="card-preview-header write-theme">
             <span class="card-icon">✍️</span>
             <span class="card-title">WRITE FILE</span>
@@ -275,9 +360,9 @@
           <div class="card-preview-body">
             <div class="card-line"><span class="k">Target:</span> <span class="v">tests/auth.test.mjs</span></div>
             <div class="card-line"><span class="k">Size:</span> <span class="v">2,842 bytes (74 lines)</span></div>
-            <div class="card-line"><span class="k">Status:</span> <span class="v status-ok">✓ Successfully written & verified on disk</span></div>
+            <div class="card-line"><span class="k">Status:</span> <span class="v status-ok">✓ Successfully written &amp; verified on disk</span></div>
             <div class="card-meta-box">
-              <code>Atomic write via temp file & rename • Zero corruption risk</code>
+              <code>Atomic write via temp file &amp; rename • Zero corruption risk</code>
             </div>
             <div class="card-footer-note">
               <span class="status-dot"></span> Undo stack updated (1-click <code>/undo</code> available)
@@ -286,7 +371,7 @@
         </div>
 
         <!-- Card 3: Execute Command -->
-        <div class="action-card-preview">
+        <div class="action-card-preview spotlight-card">
           <div class="card-preview-header bash-theme">
             <span class="card-icon">💻</span>
             <span class="card-title">EXECUTE COMMAND</span>
@@ -307,7 +392,7 @@
         </div>
 
         <!-- Card 4: Orbital Flight Plan -->
-        <div class="action-card-preview">
+        <div class="action-card-preview spotlight-card">
           <div class="card-preview-header plan-theme">
             <span class="card-icon">📋</span>
             <span class="card-title">ORBITAL FLIGHT PLAN</span>
@@ -322,16 +407,16 @@
               <span class="highlight">75%</span>
             </div>
             <div class="todo-items">
-              <div class="todo-item done">● 1. Audit JWT signing tokens & expiration</div>
+              <div class="todo-item done">● 1. Audit JWT signing tokens &amp; expiration</div>
               <div class="todo-item done">● 2. Implement audit logger integration</div>
-              <div class="todo-item active">◐ 3. Write unit & integration test coverage</div>
+              <div class="todo-item active">◐ 3. Write unit &amp; integration test coverage</div>
               <div class="todo-item pending">○ 4. Verify diagnostic matrix with doctor</div>
             </div>
           </div>
         </div>
 
         <!-- Card 5: Search Codebase -->
-        <div class="action-card-preview">
+        <div class="action-card-preview spotlight-card">
           <div class="card-preview-header grep-theme">
             <span class="card-icon">🔎</span>
             <span class="card-title">SEARCH CODEBASE</span>
@@ -351,7 +436,7 @@
         </div>
 
         <!-- Card 6: Web Discovery -->
-        <div class="action-card-preview">
+        <div class="action-card-preview spotlight-card">
           <div class="card-preview-header web-theme">
             <span class="card-icon">🌐</span>
             <span class="card-title">WEB DISCOVERY</span>
@@ -372,6 +457,57 @@
     </div>
   </section>
 
+  <!-- Personas Interactive Showcase -->
+  <section class="section personas-section" id="personas">
+    <div class="container">
+      <div class="section-header text-center">
+        <div class="section-tag">ADAPTIVE INTELLIGENCE</div>
+        <h2 class="section-title">6 Built-In Personas</h2>
+        <p class="section-subtitle">
+          Tailor Lunar's cognitive demeanor to the task at hand. Switch with <code>/persona &lt;name&gt;</code>.
+        </p>
+      </div>
+
+      <div class="personas-wrapper">
+        <div class="persona-pills">
+          <button class="persona-pill active" data-persona="vibe">
+            <span>🚀</span> <span>vibe</span>
+          </button>
+          <button class="persona-pill" data-persona="architect">
+            <span>🏛️</span> <span>architect</span>
+          </button>
+          <button class="persona-pill" data-persona="debug">
+            <span>🔬</span> <span>debug</span>
+          </button>
+          <button class="persona-pill" data-persona="teach">
+            <span>🎓</span> <span>teach</span>
+          </button>
+          <button class="persona-pill" data-persona="plan">
+            <span>🗺️</span> <span>plan</span>
+          </button>
+          <button class="persona-pill" data-persona="review">
+            <span>🔍</span> <span>review</span>
+          </button>
+        </div>
+
+        <div class="persona-display spotlight-card" id="personaDisplay">
+          <div class="persona-display-header">
+            <span class="persona-badge" id="pBadge">🚀 VIBE PERSONA</span>
+            <span class="persona-role" id="pRole">Momentum Pair-Programmer</span>
+          </div>
+          <p class="persona-instruction" id="pInstruction">
+            "Prioritizes high momentum, clean working code, and rapid iteration. Cuts through over-engineering to deliver immediate solutions with concise explanations."
+          </p>
+          <div class="persona-example-box">
+            <div class="p-ex-title">Sample Output Style:</div>
+            <pre><code id="pSample">☾ lunar ❯ Refactored payment webhook to use idempotent Redis locks in 38 lines. 
+Tests are passing, retry queue configured. Ready to ship.</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Key Architectural Features -->
   <section class="section features-section" id="features">
     <div class="container">
@@ -385,7 +521,7 @@
       </div>
 
       <div class="features-grid">
-        <div class="feature-box">
+        <div class="feature-box spotlight-card">
           <div class="feature-icon-wrapper">
             <span class="feature-icon">🪶</span>
           </div>
@@ -395,7 +531,7 @@
           </p>
         </div>
 
-        <div class="feature-box">
+        <div class="feature-box spotlight-card">
           <div class="feature-icon-wrapper">
             <span class="feature-icon">⚡</span>
           </div>
@@ -405,7 +541,7 @@
           </p>
         </div>
 
-        <div class="feature-box">
+        <div class="feature-box spotlight-card">
           <div class="feature-icon-wrapper">
             <span class="feature-icon">🪐</span>
           </div>
@@ -415,7 +551,7 @@
           </p>
         </div>
 
-        <div class="feature-box">
+        <div class="feature-box spotlight-card">
           <div class="feature-icon-wrapper">
             <span class="feature-icon">🛡️</span>
           </div>
@@ -425,7 +561,7 @@
           </p>
         </div>
 
-        <div class="feature-box">
+        <div class="feature-box spotlight-card">
           <div class="feature-icon-wrapper">
             <span class="feature-icon">🌕</span>
           </div>
@@ -435,7 +571,7 @@
           </p>
         </div>
 
-        <div class="feature-box">
+        <div class="feature-box spotlight-card">
           <div class="feature-icon-wrapper">
             <span class="feature-icon">↩️</span>
           </div>
@@ -534,7 +670,7 @@
       <div class="quickstart-grid">
         <div class="quickstart-steps">
           <!-- Step 1 -->
-          <div class="step-card">
+          <div class="step-card spotlight-card">
             <div class="step-number">1</div>
             <div class="step-content">
               <h3 class="step-title">Clone the Repository</h3>
@@ -548,7 +684,7 @@ cd Lunar-CLI</code>
           </div>
 
           <!-- Step 2 -->
-          <div class="step-card">
+          <div class="step-card spotlight-card">
             <div class="step-number">2</div>
             <div class="step-content">
               <h3 class="step-title">Run Diagnostic Matrix</h3>
@@ -561,7 +697,7 @@ cd Lunar-CLI</code>
           </div>
 
           <!-- Step 3 -->
-          <div class="step-card">
+          <div class="step-card spotlight-card">
             <div class="step-number">3</div>
             <div class="step-content">
               <h3 class="step-title">Start Coding in Orbit</h3>
@@ -575,7 +711,7 @@ cd Lunar-CLI</code>
         </div>
 
         <!-- Interactive Config Builder -->
-        <div class="config-generator-card">
+        <div class="config-generator-card spotlight-card">
           <div class="config-header">
             <span class="config-icon">⚙️</span>
             <span class="config-title">Config Generator: <code>~/.lunar/config.json</code></span>
@@ -618,6 +754,78 @@ cd Lunar-CLI</code>
     </div>
   </section>
 
+  <!-- Keyboard Shortcuts Modal -->
+  <div class="shortcuts-modal-overlay" id="shortcutsModal">
+    <div class="shortcuts-modal">
+      <div class="shortcuts-modal-header">
+        <div class="modal-title-group">
+          <span class="modal-icon">⌨️</span>
+          <h3>Lunar CLI Keyboard &amp; REPL Shortcuts</h3>
+        </div>
+        <button class="btn-modal-close" id="closeShortcutsBtn">&times;</button>
+      </div>
+      <div class="shortcuts-modal-body">
+        <div class="shortcut-category">
+          <h4>REPL Escape Sequences</h4>
+          <div class="shortcut-row">
+            <div class="shortcut-keys"><kbd>@&lt;filepath&gt;</kbd></div>
+            <div class="shortcut-desc">Attach full file contents directly into the prompt context</div>
+          </div>
+          <div class="shortcut-row">
+            <div class="shortcut-keys"><kbd>!&lt;cmd&gt;</kbd></div>
+            <div class="shortcut-desc">Escape to host shell to run immediate bash/powershell command</div>
+          </div>
+        </div>
+
+        <div class="shortcut-category">
+          <h4>Slash Commands</h4>
+          <div class="shortcut-row">
+            <div class="shortcut-keys"><kbd>/mode &lt;ask|auto|plan|yolo&gt;</kbd></div>
+            <div class="shortcut-desc">Switch agent execution shield &amp; tool approval mode</div>
+          </div>
+          <div class="shortcut-row">
+            <div class="shortcut-keys"><kbd>/model &lt;name&gt;</kbd></div>
+            <div class="shortcut-desc">Switch active LLM model or OpenRouter/Ollama endpoint</div>
+          </div>
+          <div class="shortcut-row">
+            <div class="shortcut-keys"><kbd>/undo</kbd></div>
+            <div class="shortcut-desc">Revert previous file write or surgical edit from backup snapshot</div>
+          </div>
+          <div class="shortcut-row">
+            <div class="shortcut-keys"><kbd>/doctor</kbd></div>
+            <div class="shortcut-desc">Run full connectivity, provider health, and environment diagnostics</div>
+          </div>
+        </div>
+
+        <div class="shortcut-category">
+          <h4>Approval Modals</h4>
+          <div class="shortcut-row">
+            <div class="shortcut-keys"><kbd>y</kbd> / <kbd>Enter</kbd></div>
+            <div class="shortcut-desc">Approve file modification or bash command execution</div>
+          </div>
+          <div class="shortcut-row">
+            <div class="shortcut-keys"><kbd>n</kbd> / <kbd>Esc</kbd></div>
+            <div class="shortcut-desc">Deny action and return control back to conversational agent</div>
+          </div>
+          <div class="shortcut-row">
+            <div class="shortcut-keys"><kbd>a</kbd></div>
+            <div class="shortcut-desc">YOLO mode: approve this and all subsequent actions automatically</div>
+          </div>
+          <div class="shortcut-row">
+            <div class="shortcut-keys"><kbd>e</kbd></div>
+            <div class="shortcut-desc">Request agent to explain why this specific change is necessary</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back to Top Floating Button -->
+  <button class="back-to-top" id="backToTopBtn" title="Back to orbit (Top)">
+    <span class="btn-top-icon">↑</span>
+    <span class="btn-top-moon">🌙</span>
+  </button>
+
   <!-- Footer -->
   <footer class="footer">
     <div class="container footer-content">
@@ -640,7 +848,9 @@ cd Lunar-CLI</code>
           <h4 class="footer-col-title">Navigation</h4>
           <a href="#features">Features</a>
           <a href="#simulator">Terminal Simulator</a>
+          <a href="#anatomy">Architecture</a>
           <a href="#cards">Visual Cards</a>
+          <a href="#personas">Personas</a>
           <a href="#benchmarks">Benchmarks</a>
           <a href="#quickstart">Quickstart</a>
         </div>
