@@ -1,0 +1,37 @@
+{
+  "name": "lunar",
+  "version": "2.3.0",
+  "description": "LUNAR 🌙 — Moonlit Terminal AI Coding Assistant. Single file. Zero dependencies.",
+  "type": "module",
+  "main": "./lunar.mjs",
+  "bin": {
+    "lunar": "./lunar.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node lunar.mjs",
+    "doctor": "node lunar.mjs doctor",
+    "setup": "node lunar.mjs setup",
+    "test": "node lunar.mjs doctor"
+  },
+  "files": [
+    "lunar.mjs",
+    "lunar",
+    "lunar.cmd",
+    "LUNAR.md",
+    "README.md",
+    ".lunarignore"
+  ],
+  "keywords": [
+    "lunar",
+    "ai",
+    "agent",
+    "cli",
+    "terminal",
+    "coding-assistant",
+    "zero-dependencies"
+  ],
+  "license": "MIT"
+}
