@@ -43,7 +43,8 @@
       glyph,
       illumination,
       daysToFull: daysToFull.toFixed(1),
-      cycle: cycle.toFixed(1)
+      cycle: cycle.toFixed(1),
+      phaseFraction
     };
   }
 
@@ -63,16 +64,233 @@
     if (widgetPhaseName) widgetPhaseName.textContent = `${moon.glyph} ${moon.phaseName}`;
     if (widgetIllumination) widgetIllumination.textContent = `${moon.illumination}% illuminated`;
     if (widgetNextFull) widgetNextFull.textContent = `${moon.daysToFull} days`;
-
-    // Dynamic Moon Shadow Shader
-    const shadow = document.getElementById('moonShadowOverlay');
-    if (shadow) {
-      const illumPct = moon.illumination;
-      shadow.style.background = `linear-gradient(90deg, transparent ${illumPct * 0.7}%, rgba(3, 5, 10, 0.9) ${Math.min(100, illumPct + 35)}%)`;
-    }
   }
 
-  // ─── 2. STARFIELD & METEOR CANVAS ANIMATION ───────────────────────
+  // ─── 2. PHOTOREALISTIC 3D MOON CANVAS RENDERER ───────────────────
+  function init3DMoonCanvas() {
+    const canvas = document.getElementById('moonCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width;
+    const h = canvas.height;
+    const cx = w / 2;
+    const cy = h / 2;
+    const R = 112; // Moon radius in canvas
+
+    // Generate high-resolution procedural surface texture (offscreen)
+    const texW = 512;
+    const texH = 256;
+    const offCanvas = document.createElement('canvas');
+    offCanvas.width = texW;
+    offCanvas.height = texH;
+    const offCtx = offCanvas.getContext('2d');
+
+    // Base highlands: silver-gray noise
+    const imgData = offCtx.createImageData(texW, texH);
+    const data = imgData.data;
+
+    // Simple pseudo-random hash for procedural surface
+    function hash(x, y) {
+      let n = Math.sin(x * 12.9898 + y * 78.233) * 43758.5453;
+      return n - Math.floor(n);
+    }
+
+    function smoothNoise(x, y) {
+      const i = Math.floor(x);
+      const j = Math.floor(y);
+      const fx = x - i;
+      const fy = y - j;
+      const s = fx * fx * (3 - 2 * fx);
+      const t = fy * fy * (3 - 2 * fy);
+
+      const n00 = hash(i, j);
+      const n10 = hash(i + 1, j);
+      const n01 = hash(i, j + 1);
+      const n11 = hash(i + 1, j + 1);
+
+      const nx0 = n00 * (1 - s) + n10 * s;
+      const nx1 = n01 * (1 - s) + n11 * s;
+      return nx0 * (1 - t) + nx1 * t;
+    }
+
+    function fBm(x, y) {
+      let v = 0;
+      let amp = 0.5;
+      let freq = 1;
+      for (let o = 0; o < 4; o++) {
+        v += smoothNoise(x * freq, y * freq) * amp;
+        amp *= 0.5;
+        freq *= 2;
+      }
+      return v;
+    }
+
+    for (let py = 0; py < texH; py++) {
+      for (let px = 0; px < texW; px++) {
+        const u = px / texW;
+        const v = py / texH;
+        const n = fBm(u * 8, v * 4);
+
+        // Maria basalt patches (darker areas)
+        const maria = smoothNoise(u * 3 + 1.2, v * 2 + 0.8);
+        let shade = (n * 0.4 + 0.6) * 220;
+        if (maria > 0.48) {
+          shade *= 0.68; // darker basalt sea
+        }
+
+        const idx = (py * texW + px) * 4;
+        data[idx] = Math.min(255, shade * 0.96);     // R
+        data[idx + 1] = Math.min(255, shade * 0.98); // G
+        data[idx + 2] = Math.min(255, shade * 1.05); // B (subtle cool starlight tint)
+        data[idx + 3] = 255;
+      }
+    }
+    offCtx.putImageData(imgData, 0, 0);
+
+    // Overlay prominent craters & rays
+    function drawCrater(x, y, r, depth) {
+      offCtx.save();
+      offCtx.beginPath();
+      offCtx.arc(x, y, r, 0, Math.PI * 2);
+      offCtx.fillStyle = `rgba(30, 41, 59, ${depth})`;
+      offCtx.fill();
+      offCtx.lineWidth = Math.max(1, r * 0.2);
+      offCtx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      offCtx.stroke();
+
+      // Bright ray splashes
+      if (r > 12) {
+        for (let i = 0; i < 8; i++) {
+          const ang = (i / 8) * Math.PI * 2;
+          offCtx.beginPath();
+          offCtx.moveTo(x + Math.cos(ang) * r, y + Math.sin(ang) * r);
+          offCtx.lineTo(x + Math.cos(ang) * (r * 2.8), y + Math.sin(ang) * (r * 2.8));
+          offCtx.strokeStyle = 'rgba(255, 255, 255, 0.18)';
+          offCtx.lineWidth = 1.2;
+          offCtx.stroke();
+        }
+      }
+      offCtx.restore();
+    }
+
+    drawCrater(120, 80, 22, 0.55); // Tycho-like
+    drawCrater(280, 110, 28, 0.6); // Copernicus-like
+    drawCrater(360, 60, 16, 0.45);
+    drawCrater(210, 160, 18, 0.5);
+    drawCrater(440, 180, 14, 0.4);
+
+    let rotation = 0;
+    let isDragging = false;
+    let lastX = 0;
+
+    canvas.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      lastX = e.clientX;
+      canvas.style.cursor = 'grabbing';
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+      canvas.style.cursor = 'grab';
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        const delta = e.clientX - lastX;
+        rotation += delta * 0.008;
+        lastX = e.clientX;
+      }
+    });
+
+    function renderMoon() {
+      ctx.clearRect(0, 0, w, h);
+
+      if (!isDragging) {
+        rotation += 0.002; // slow celestial rotation
+      }
+
+      const moon = computeMoonPhase();
+      // Sun angle based on synodic phase
+      const sunAngle = moon.phaseFraction * Math.PI * 2;
+      const lx = Math.cos(sunAngle);
+      const lz = Math.sin(sunAngle);
+
+      // Draw atmospheric outer cyan halo
+      const haloGrad = ctx.createRadialGradient(cx, cy, R * 0.8, cx, cy, R * 1.35);
+      haloGrad.addColorStop(0, 'rgba(56, 189, 248, 0.25)');
+      haloGrad.addColorStop(0.5, 'rgba(129, 140, 248, 0.12)');
+      haloGrad.addColorStop(1, 'rgba(3, 5, 10, 0)');
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, R * 1.35, 0, Math.PI * 2);
+      ctx.fillStyle = haloGrad;
+      ctx.fill();
+
+      // Sphere clipping circle
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, 0, Math.PI * 2);
+      ctx.clip();
+
+      // Render sphere surface
+      // Draw rotated texture map
+      const normRot = (rotation % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+      const texX = (normRot / (Math.PI * 2)) * texW;
+
+      ctx.drawImage(offCanvas, texX, 0, texW / 2, texH, cx - R, cy - R, R * 2, R * 2);
+      if (texX > texW / 2) {
+        ctx.drawImage(offCanvas, 0, 0, texW / 2, texH, cx - R + (texW - texX), cy - R, R * 2, R * 2);
+      }
+
+      // Spherical shading overlay (Fresnel + Curvature)
+      const sphereGrad = ctx.createRadialGradient(cx - R * 0.35, cy - R * 0.35, R * 0.1, cx, cy, R);
+      sphereGrad.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
+      sphereGrad.addColorStop(0.7, 'rgba(0, 0, 0, 0.35)');
+      sphereGrad.addColorStop(1, 'rgba(3, 5, 12, 0.85)');
+
+      ctx.fillStyle = sphereGrad;
+      ctx.fillRect(cx - R, cy - R, R * 2, R * 2);
+
+      // Synodic Phase Terminator Shadow (Real-time illuminated boundary)
+      const shadowGrad = ctx.createLinearGradient(cx - R, cy, cx + R, cy);
+      // Determine lit side from sun direction lx
+      if (lx > 0) {
+        // Waxing (right side lit)
+        const term = (1 - lx) * 0.5;
+        shadowGrad.addColorStop(0, 'rgba(2, 4, 10, 0.94)');
+        shadowGrad.addColorStop(Math.max(0.01, term - 0.15), 'rgba(2, 4, 10, 0.92)');
+        shadowGrad.addColorStop(Math.min(0.99, term + 0.15), 'rgba(2, 4, 10, 0.05)');
+        shadowGrad.addColorStop(1, 'rgba(2, 4, 10, 0)');
+      } else {
+        // Waning (left side lit)
+        const term = (1 - lx) * 0.5;
+        shadowGrad.addColorStop(0, 'rgba(2, 4, 10, 0)');
+        shadowGrad.addColorStop(Math.max(0.01, term - 0.15), 'rgba(2, 4, 10, 0.05)');
+        shadowGrad.addColorStop(Math.min(0.99, term + 0.15), 'rgba(2, 4, 10, 0.92)');
+        shadowGrad.addColorStop(1, 'rgba(2, 4, 10, 0.94)');
+      }
+
+      ctx.fillStyle = shadowGrad;
+      ctx.fillRect(cx - R, cy - R, R * 2, R * 2);
+
+      // Cyan Limb / Earthshine rim highlight
+      const rimGrad = ctx.createRadialGradient(cx, cy, R * 0.85, cx, cy, R);
+      rimGrad.addColorStop(0, 'rgba(56, 189, 248, 0)');
+      rimGrad.addColorStop(0.95, 'rgba(56, 189, 248, 0.35)');
+      rimGrad.addColorStop(1, 'rgba(125, 211, 252, 0.7)');
+
+      ctx.fillStyle = rimGrad;
+      ctx.fillRect(cx - R, cy - R, R * 2, R * 2);
+
+      ctx.restore(); // restore clipping
+
+      requestAnimationFrame(renderMoon);
+    }
+
+    renderMoon();
+  }
+
+  // ─── 3. STARFIELD & METEOR CANVAS ANIMATION ───────────────────────
   function initStarfield() {
     const canvas = document.getElementById('starfield');
     if (!canvas) return;
@@ -86,7 +304,7 @@
       height = canvas.height = window.innerHeight;
     });
 
-    const starCount = Math.floor((width * height) / 3600);
+    const starCount = Math.floor((width * height) / 3400);
     const stars = [];
 
     for (let i = 0; i < starCount; i++) {
@@ -101,24 +319,22 @@
       });
     }
 
-    // Shooting meteors pool
     const meteors = [];
     function spawnMeteor() {
       if (meteors.length >= 2) return;
       meteors.push({
         x: Math.random() * width * 0.8 + width * 0.1,
         y: Math.random() * (height * 0.3),
-        length: Math.random() * 80 + 50,
+        length: Math.random() * 90 + 60,
         speed: Math.random() * 8 + 6,
         alpha: 1.0,
         angle: Math.PI / 4 + (Math.random() * 0.2 - 0.1)
       });
     }
 
-    // Spawn meteor occasionally every 4-8 seconds
     setInterval(() => {
-      if (Math.random() > 0.3) spawnMeteor();
-    }, 4500);
+      if (Math.random() > 0.25) spawnMeteor();
+    }, 4000);
 
     let mouseX = width / 2;
     let mouseY = height / 2;
@@ -133,7 +349,6 @@
       const dx = (mouseX - width / 2) * 0.015;
       const dy = (mouseY - height / 2) * 0.015;
 
-      // Draw twinkling stars
       for (let s of stars) {
         s.alpha += s.twinkleSpeed * s.twinkleDir;
         if (s.alpha > 0.95) { s.alpha = 0.95; s.twinkleDir = -1; }
@@ -146,7 +361,6 @@
         ctx.fill();
       }
 
-      // Draw shooting meteors
       for (let i = meteors.length - 1; i >= 0; i--) {
         const m = meteors[i];
         const tailX = m.x - Math.cos(m.angle) * m.length;
@@ -179,7 +393,7 @@
     renderStars();
   }
 
-  // ─── 3. 3D MOON ORB PARALLAX ──────────────────────────────────────
+  // ─── 4. 3D MOON PARALLAX TILT ─────────────────────────────────────
   function initMoonParallax() {
     const orb = document.getElementById('moonOrbWrapper');
     if (!orb) return;
@@ -197,7 +411,7 @@
     });
   }
 
-  // ─── 4. SPOTLIGHT CARD MOUSE TRACKER ──────────────────────────────
+  // ─── 5. SPOTLIGHT CARD MOUSE TRACKER ──────────────────────────────
   function initSpotlightCards() {
     const cards = document.querySelectorAll('.spotlight-card');
     cards.forEach(card => {
@@ -211,7 +425,7 @@
     });
   }
 
-  // ─── 5. INTERACTIVE TERMINAL SIMULATOR ────────────────────────────
+  // ─── 6. INTERACTIVE TERMINAL SIMULATOR ────────────────────────────
   const terminalScreen = document.getElementById('terminalScreen');
   const terminalTitle = document.getElementById('terminalTitle');
   const scenarioTabs = document.querySelectorAll('.scenario-tabs .tab-btn');
@@ -315,12 +529,12 @@
 
     if (scenarioKey === 'interactive-repl') {
       terminalReplBar.style.display = 'flex';
-      terminalTitle.textContent = '☾ lunar — REPL Interactive Terminal';
+      terminalTitle.textContent = '☾ lunar — REPL Interactive Terminal • 200 OK';
       renderReplWelcome();
       return;
     } else {
       terminalReplBar.style.display = 'none';
-      terminalTitle.textContent = '☾ lunar — ~/hyper-orbit (openrouter: apodex-1.1-mini)';
+      terminalTitle.textContent = '☾ lunar — ~/hyper-orbit (openrouter: apodex-1.1-mini) • 200 OK';
     }
 
     const steps = SCENARIOS[scenarioKey] || [];
@@ -409,7 +623,6 @@
     commandHistory.push(val);
     historyIndex = commandHistory.length;
 
-    // Print command line
     const userLine = document.createElement('div');
     userLine.className = 'term-line';
     userLine.innerHTML = `<span style="color:#38bdf8; font-weight:700;">lunar ❯</span> <span style="color:#fff;">${val}</span>`;
@@ -500,7 +713,6 @@
     executeReplCommand(val);
   }
 
-  // Bind scenario tabs
   scenarioTabs.forEach(tab => {
     tab.addEventListener('click', () => {
       scenarioTabs.forEach(t => t.classList.remove('active'));
@@ -550,7 +762,7 @@
     });
   });
 
-  // ─── 6. PERSONAS SHOWCASE ─────────────────────────────────────────
+  // ─── 7. PERSONAS SHOWCASE ─────────────────────────────────────────
   const PERSONAS = {
     vibe: {
       badge: "🚀 VIBE PERSONA",
@@ -611,7 +823,7 @@
     });
   });
 
-  // ─── 7. KEYBOARD SHORTCUTS MODAL ──────────────────────────────────
+  // ─── 8. KEYBOARD SHORTCUTS MODAL ──────────────────────────────────
   const shortcutsModal = document.getElementById('shortcutsModal');
   const openShortcutsBtn = document.getElementById('openShortcutsBtn');
   const closeShortcutsBtn = document.getElementById('closeShortcutsBtn');
@@ -642,7 +854,7 @@
     }
   });
 
-  // ─── 8. BACK TO TOP BUTTON ────────────────────────────────────────
+  // ─── 9. BACK TO TOP BUTTON ────────────────────────────────────────
   const backToTopBtn = document.getElementById('backToTopBtn');
   if (backToTopBtn) {
     window.addEventListener('scroll', () => {
@@ -658,7 +870,7 @@
     });
   }
 
-  // ─── 9. LIVE GITHUB STATS FETCHER ─────────────────────────────────
+  // ─── 10. LIVE GITHUB STATS FETCHER ────────────────────────────────
   const gitHubStarsEl = document.getElementById('gitHubStars');
   function fetchGitHubStats() {
     fetch('https://api.github.com/repos/ahpah-dev/Lunar-CLI')
@@ -672,7 +884,7 @@
   }
   fetchGitHubStats();
 
-  // ─── 10. COPY COMMAND & TOAST FEEDBACK ────────────────────────────
+  // ─── 11. COPY COMMAND & TOAST FEEDBACK ────────────────────────────
   const toast = document.getElementById('toast');
   function showToast(msg = 'Copied to clipboard!') {
     if (!toast) return;
@@ -711,7 +923,7 @@
     });
   });
 
-  // ─── 11. CONFIG GENERATOR LOGIC ───────────────────────────────────
+  // ─── 12. CONFIG GENERATOR LOGIC ───────────────────────────────────
   const configPreview = document.getElementById('configJsonPreview');
   const copyConfigBtn = document.getElementById('copyConfigBtn');
   const providerRadios = document.querySelectorAll('input[name="providerSelect"]');
@@ -772,6 +984,7 @@
   // ─── INITIALIZATION ───────────────────────────────────────────────
   updateAstronomicalWidgets();
   initStarfield();
+  init3DMoonCanvas();
   initMoonParallax();
   initSpotlightCards();
   playScenario('surgical-edit');

@@ -12,20 +12,24 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌙</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <!-- Deep Space Canvas with Twinkling Stars & Meteors -->
   <canvas id="starfield"></canvas>
+  <div class="celestial-grid-bg"></div>
   <div class="ambient-nebula ambient-top"></div>
   <div class="ambient-nebula ambient-bottom"></div>
+  <div class="ambient-nebula ambient-center"></div>
 
   <!-- Header Navigation -->
   <header class="header">
     <div class="container header-inner">
       <a href="#" class="brand">
-        <span class="brand-moon">🌙</span>
+        <div class="brand-crest">
+          <span class="brand-moon">🌙</span>
+        </div>
         <span class="brand-name">LUNAR<span class="brand-tag">CLI</span></span>
       </a>
 
@@ -41,6 +45,7 @@
 
       <div class="header-actions">
         <div class="live-phase-badge" id="headerPhaseBadge" title="Live Astronomical Synodic Moon Phase">
+          <span class="phase-pulse-dot"></span>
           <span class="phase-glyph" id="headerPhaseGlyph">🌖</span>
           <span class="phase-name" id="headerPhaseName">Waxing Gibbous</span>
         </div>
@@ -48,10 +53,10 @@
           <kbd>?</kbd>
         </button>
         <a href="https://github.com/ahpah-dev/Lunar-CLI" target="_blank" rel="noopener noreferrer" class="btn-github">
-          <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+          <svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
             <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
           </svg>
-          <span>Star on GitHub</span>
+          <span>Star</span>
           <span class="badge-repo" id="gitHubStars">★ 1</span>
         </a>
       </div>
@@ -62,25 +67,29 @@
   <section class="hero-section">
     <div class="container hero-container">
       <div class="hero-content">
-        <div class="hero-badge">
-          <span class="pulse-indicator"></span>
-          <span class="badge-text">v2.3.0 Release • Single File • Zero npm Dependencies</span>
+        <div class="hero-eyebrow">
+          <span class="hero-eyebrow-pill">
+            <span class="pulse-indicator"></span>
+            <span class="eyebrow-text">v2.3.0 Production Release</span>
+          </span>
+          <span class="eyebrow-sub">Single File • Zero Dependencies</span>
         </div>
 
         <h1 class="hero-title">
-          The Moonlit Terminal <br>
-          <span class="gradient-text">AI Coding Assistant</span>
+          <span class="hero-title-sub">AUTONOMOUS TERMINAL INTELLIGENCE</span>
+          <span class="hero-title-main">Code in the <span class="shimmer-text">Moonlight</span></span>
         </h1>
 
         <p class="hero-subtitle">
-          Engineered for raw speed, aesthetic elegance, and surgical precision. 
-          Lunar puts an autonomous coding intelligence in your terminal with 
-          real-time celestial gradients, zero-dependency Node architecture, and atomic file safety.
+          Engineered for raw speed, surgical atomic diffs, and pure aesthetic brilliance. 
+          Lunar puts a zero-dependency AI coding agent directly in your command line with 
+          real-time celestial TrueColor gradients, multi-provider orbit, and time-machine rollbacks.
         </p>
 
         <!-- Command Pill -->
         <div class="hero-cta-group">
           <div class="command-box">
+            <div class="command-box-glow"></div>
             <span class="command-prompt">$</span>
             <code class="command-code" id="heroInstallCommand">git clone https://github.com/ahpah-dev/Lunar-CLI.git</code>
             <button class="btn-copy" id="heroCopyBtn" title="Copy to clipboard" aria-label="Copy Command">
@@ -94,8 +103,8 @@
 
           <div class="hero-buttons">
             <a href="#simulator" class="btn btn-primary">
-              <span>Explore Live Terminal</span>
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              <span class="btn-primary-text">Launch Live Terminal</span>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
             <a href="#quickstart" class="btn btn-secondary">
               <span>Quickstart Guide</span>
@@ -103,41 +112,48 @@
           </div>
         </div>
 
-        <!-- Metric Badges -->
-        <div class="hero-metrics">
-          <div class="metric-item">
-            <span class="metric-val">0</span>
-            <span class="metric-label">npm Dependencies</span>
+        <!-- Metric Glass Cards -->
+        <div class="hero-metrics-grid">
+          <div class="metric-card spotlight-card">
+            <div class="metric-head">
+              <span class="metric-val">0</span>
+              <span class="metric-tag tag-cyan">Native</span>
+            </div>
+            <div class="metric-label">npm Dependencies</div>
+            <div class="metric-hint">Node 18+ stdlib only</div>
           </div>
-          <div class="metric-sep"></div>
-          <div class="metric-item">
-            <span class="metric-val">&lt; 45ms</span>
-            <span class="metric-label">Instant Cold Start</span>
+          <div class="metric-card spotlight-card">
+            <div class="metric-head">
+              <span class="metric-val">&lt;45<small>ms</small></span>
+              <span class="metric-tag tag-emerald">Instant</span>
+            </div>
+            <div class="metric-label">Cold Start Latency</div>
+            <div class="metric-hint">Zero bundle wait</div>
           </div>
-          <div class="metric-sep"></div>
-          <div class="metric-item">
-            <span class="metric-val">95 KB</span>
-            <span class="metric-label">Single File Footprint</span>
+          <div class="metric-card spotlight-card">
+            <div class="metric-head">
+              <span class="metric-val">95<small>KB</small></span>
+              <span class="metric-tag tag-violet">Single File</span>
+            </div>
+            <div class="metric-label">Total Code Footprint</div>
+            <div class="metric-hint">Self-contained lunar.mjs</div>
           </div>
-          <div class="metric-sep"></div>
-          <div class="metric-item">
-            <span class="metric-val">100%</span>
-            <span class="metric-label">Offline Ollama Ready</span>
+          <div class="metric-card spotlight-card">
+            <div class="metric-head">
+              <span class="metric-val">100<small>%</small></span>
+              <span class="metric-tag tag-gold">Offline</span>
+            </div>
+            <div class="metric-label">Ollama &amp; 9Router</div>
+            <div class="metric-hint">Local air-gapped GPU</div>
           </div>
         </div>
       </div>
 
-      <!-- Hero Astronomical Orb & Widget -->
+      <!-- Hero Photorealistic 3D Moon Canvas & Telemetry Widget -->
       <div class="hero-visual">
-        <div class="moon-orb-container" id="moonOrbWrapper">
-          <div class="moon-orb-glow"></div>
-          <div class="moon-orb" id="moonOrbVisual">
-            <div class="crater crater-1"></div>
-            <div class="crater crater-2"></div>
-            <div class="crater crater-3"></div>
-            <div class="crater crater-4"></div>
-            <div class="moon-shadow" id="moonShadowOverlay"></div>
-          </div>
+        <div class="moon-canvas-container" id="moonOrbWrapper">
+          <div class="moon-halo-glow"></div>
+          <canvas id="moonCanvas" width="280" height="280"></canvas>
           <div class="orbital-ring ring-1"></div>
           <div class="orbital-ring ring-2"></div>
           <div class="orbital-particle p1"></div>
@@ -147,9 +163,11 @@
 
         <div class="celestial-card spotlight-card">
           <div class="celestial-card-header">
-            <span class="celestial-icon">🔭</span>
-            <span class="celestial-title">ASTRONOMICAL ENGINE</span>
-            <span class="celestial-live">LIVE SYNC</span>
+            <div class="celestial-header-left">
+              <span class="celestial-icon">🔭</span>
+              <span class="celestial-title">ASTRONOMICAL MATRIX</span>
+            </div>
+            <span class="celestial-live"><span class="live-dot"></span> LIVE SYNC</span>
           </div>
           <div class="celestial-card-body">
             <div class="celestial-row">
@@ -165,7 +183,7 @@
               <span class="c-value" id="widgetNextFull">-- days</span>
             </div>
             <div class="celestial-row">
-              <span class="c-label">Terminal Colors</span>
+              <span class="c-label">Rendering Mode</span>
               <span class="c-value status-ok">TrueColor 24-bit RGB</span>
             </div>
           </div>
@@ -178,10 +196,10 @@
   <section class="section simulator-section" id="simulator">
     <div class="container">
       <div class="section-header text-center">
-        <div class="section-tag">INTERACTIVE TERMINAL</div>
-        <h2 class="section-title">See Lunar in Action</h2>
+        <div class="section-tag">AEROSPACE INTERFACE</div>
+        <h2 class="section-title">See Lunar in Orbit</h2>
         <p class="section-subtitle">
-          Experience the real-time celestial gradients, animated orbit spinners, 
+          Experience real-time celestial gradients, animated orbit spinners, 
           surgical diff cards, and flight plans directly in your browser.
         </p>
 
@@ -214,8 +232,11 @@
             <span class="dot dot-yellow"></span>
             <span class="dot dot-green"></span>
           </div>
-          <div class="terminal-title" id="terminalTitle">
-            ☾ lunar — ~/hyper-orbit (openrouter: apodex-1.1-mini)
+          <div class="terminal-title-wrapper">
+            <span class="term-status-led"></span>
+            <div class="terminal-title" id="terminalTitle">
+              ☾ lunar — ~/hyper-orbit (openrouter: apodex-1.1-mini) • 200 OK
+            </div>
           </div>
           <div class="terminal-actions">
             <button class="term-btn" id="termRestartBtn" title="Replay Scenario">↺ Replay</button>
@@ -256,7 +277,7 @@
   <section class="section anatomy-section" id="anatomy">
     <div class="container">
       <div class="section-header text-center">
-        <div class="section-tag">ARCHITECTURAL PURITY</div>
+        <div class="section-tag">ENGINEERING PURITY</div>
         <h2 class="section-title">Anatomy of a 95 KB Agent</h2>
         <p class="section-subtitle">
           How Lunar delivers state-of-the-art autonomous capabilities in a single clean file 
@@ -266,48 +287,66 @@
 
       <div class="anatomy-grid">
         <div class="anatomy-card spotlight-card">
-          <div class="anatomy-num">01</div>
-          <div class="anatomy-icon">🌒</div>
+          <div class="anatomy-card-glow"></div>
+          <div class="anatomy-header">
+            <span class="anatomy-num">01</span>
+            <span class="anatomy-icon">🌒</span>
+          </div>
           <h3 class="anatomy-title">Astronomical Engine</h3>
           <p class="anatomy-desc">Calculates real-time synodic moon age against astronomical ephemeris (29.53058867 day cycle), rendering illuminated glyphs and 24-bit TrueColor terminal gradients.</p>
           <div class="anatomy-badge">Native Math &amp; ANSI Sequences</div>
         </div>
 
         <div class="anatomy-card spotlight-card">
-          <div class="anatomy-num">02</div>
-          <div class="anatomy-icon">⚡</div>
+          <div class="anatomy-card-glow"></div>
+          <div class="anatomy-header">
+            <span class="anatomy-num">02</span>
+            <span class="anatomy-icon">⚡</span>
+          </div>
           <h3 class="anatomy-title">Surgical Replacement Core</h3>
           <p class="anatomy-desc">Uses contiguous line offset targeting with automated unified diff generation. Computes red/green previews and applies atomic writes without risking hallucinated code overwrites.</p>
           <div class="anatomy-badge">Native fs &amp; child_process</div>
         </div>
 
         <div class="anatomy-card spotlight-card">
-          <div class="anatomy-num">03</div>
-          <div class="anatomy-icon">🪐</div>
+          <div class="anatomy-card-glow"></div>
+          <div class="anatomy-header">
+            <span class="anatomy-num">03</span>
+            <span class="anatomy-icon">🪐</span>
+          </div>
           <h3 class="anatomy-title">Multi-Provider Gateway</h3>
           <p class="anatomy-desc">Universal HTTP SSE client connecting seamlessly to OpenRouter, Ollama, local 9Router SQLite databases, and OpenAI-compatible endpoints with auto-retry and streaming.</p>
           <div class="anatomy-badge">Native https &amp; node:sqlite</div>
         </div>
 
         <div class="anatomy-card spotlight-card">
-          <div class="anatomy-num">04</div>
-          <div class="anatomy-icon">📋</div>
+          <div class="anatomy-card-glow"></div>
+          <div class="anatomy-header">
+            <span class="anatomy-num">04</span>
+            <span class="anatomy-icon">📋</span>
+          </div>
           <h3 class="anatomy-title">Autonomous Flight Plan</h3>
           <p class="anatomy-desc">Maintains structured multi-step flight plans with ASCII trajectory progress bars (<code>[████░░]</code>) and live step transitions keeping long-running refactors on course.</p>
           <div class="anatomy-badge">Dynamic State Machine</div>
         </div>
 
         <div class="anatomy-card spotlight-card">
-          <div class="anatomy-num">05</div>
-          <div class="anatomy-icon">🛡️</div>
+          <div class="anatomy-card-glow"></div>
+          <div class="anatomy-header">
+            <span class="anatomy-num">05</span>
+            <span class="anatomy-icon">🛡️</span>
+          </div>
           <h3 class="anatomy-title">Permission Shield &amp; Modals</h3>
           <p class="anatomy-desc">Interactive raw-mode terminal UI providing arrow-key navigation, instant search filtering, and multi-choice approval prompts (<code>[y]</code> Approve, <code>[n]</code> Deny, <code>[a]</code> YOLO).</p>
           <div class="anatomy-badge">Native readline &amp; rawMode</div>
         </div>
 
         <div class="anatomy-card spotlight-card">
-          <div class="anatomy-num">06</div>
-          <div class="anatomy-icon">↩️</div>
+          <div class="anatomy-card-glow"></div>
+          <div class="anatomy-header">
+            <span class="anatomy-num">06</span>
+            <span class="anatomy-icon">↩️</span>
+          </div>
           <h3 class="anatomy-title">Time Machine Checkpoints</h3>
           <p class="anatomy-desc">Every write or surgical edit creates a timestamped copy in <code>.lunar/backups/</code> before touching files. Any change can be instantly reverted with <code>/undo</code>.</p>
           <div class="anatomy-badge">Zero-Loss Rollback Stack</div>
@@ -332,17 +371,19 @@
         <!-- Card 1: Surgical Edit -->
         <div class="action-card-preview spotlight-card">
           <div class="card-preview-header edit-theme">
-            <span class="card-icon">⚡</span>
-            <span class="card-title">SURGICAL EDIT</span>
+            <div class="card-header-left">
+              <span class="card-icon">⚡</span>
+              <span class="card-title">SURGICAL EDIT</span>
+            </div>
             <span class="card-badge">SINGLE-BLOCK ATOMIC</span>
           </div>
           <div class="card-preview-body">
             <div class="card-line"><span class="k">Target:</span> <span class="v">src/auth/jwt.mjs</span></div>
             <div class="card-line"><span class="k">Lines:</span> <span class="v">142 → 158 (16 lines affected)</span></div>
             <div class="diff-box">
-              <div class="diff-line diff-rem">- const token = jwt.sign(payload, secret);</div>
-              <div class="diff-line diff-add">+ const token = jwt.sign(payload, secret, { expiresIn: '15m' });</div>
-              <div class="diff-line diff-add">+ await auditLogger.recordTokenIssuance(payload.userId);</div>
+              <div class="diff-line diff-rem"><span class="diff-sign">-</span> const token = jwt.sign(payload, secret);</div>
+              <div class="diff-line diff-add"><span class="diff-sign">+</span> const token = jwt.sign(payload, secret, { expiresIn: '15m' });</div>
+              <div class="diff-line diff-add"><span class="diff-sign">+</span> await auditLogger.recordTokenIssuance(payload.userId);</div>
             </div>
             <div class="card-footer-note">
               <span class="status-dot"></span> Checkpoint saved: <code>.lunar/backups/jwt.mjs.bak</code>
@@ -353,8 +394,10 @@
         <!-- Card 2: Write File -->
         <div class="action-card-preview spotlight-card">
           <div class="card-preview-header write-theme">
-            <span class="card-icon">✍️</span>
-            <span class="card-title">WRITE FILE</span>
+            <div class="card-header-left">
+              <span class="card-icon">✍️</span>
+              <span class="card-title">WRITE FILE</span>
+            </div>
             <span class="card-badge">OVERWRITE SAFE</span>
           </div>
           <div class="card-preview-body">
@@ -373,8 +416,10 @@
         <!-- Card 3: Execute Command -->
         <div class="action-card-preview spotlight-card">
           <div class="card-preview-header bash-theme">
-            <span class="card-icon">💻</span>
-            <span class="card-title">EXECUTE COMMAND</span>
+            <div class="card-header-left">
+              <span class="card-icon">💻</span>
+              <span class="card-title">EXECUTE COMMAND</span>
+            </div>
             <span class="card-badge status-ok">EXIT CODE 0</span>
           </div>
           <div class="card-preview-body">
@@ -394,8 +439,10 @@
         <!-- Card 4: Orbital Flight Plan -->
         <div class="action-card-preview spotlight-card">
           <div class="card-preview-header plan-theme">
-            <span class="card-icon">📋</span>
-            <span class="card-title">ORBITAL FLIGHT PLAN</span>
+            <div class="card-header-left">
+              <span class="card-icon">📋</span>
+              <span class="card-title">ORBITAL FLIGHT PLAN</span>
+            </div>
             <span class="card-badge">3 / 4 COMPLETED</span>
           </div>
           <div class="card-preview-body">
@@ -418,8 +465,10 @@
         <!-- Card 5: Search Codebase -->
         <div class="action-card-preview spotlight-card">
           <div class="card-preview-header grep-theme">
-            <span class="card-icon">🔎</span>
-            <span class="card-title">SEARCH CODEBASE</span>
+            <div class="card-header-left">
+              <span class="card-icon">🔎</span>
+              <span class="card-title">SEARCH CODEBASE</span>
+            </div>
             <span class="card-badge">7 MATCHES FOUND</span>
           </div>
           <div class="card-preview-body">
@@ -438,8 +487,10 @@
         <!-- Card 6: Web Discovery -->
         <div class="action-card-preview spotlight-card">
           <div class="card-preview-header web-theme">
-            <span class="card-icon">🌐</span>
-            <span class="card-title">WEB DISCOVERY</span>
+            <div class="card-header-left">
+              <span class="card-icon">🌐</span>
+              <span class="card-title">WEB DISCOVERY</span>
+            </div>
             <span class="card-badge status-ok">HTTP 200 OK</span>
           </div>
           <div class="card-preview-body">
@@ -461,7 +512,7 @@
   <section class="section personas-section" id="personas">
     <div class="container">
       <div class="section-header text-center">
-        <div class="section-tag">ADAPTIVE INTELLIGENCE</div>
+        <div class="section-tag">COGNITIVE DEMEANOR</div>
         <h2 class="section-title">6 Built-In Personas</h2>
         <p class="section-subtitle">
           Tailor Lunar's cognitive demeanor to the task at hand. Switch with <code>/persona &lt;name&gt;</code>.
@@ -512,8 +563,8 @@ Tests are passing, retry queue configured. Ready to ship.</code></pre>
   <section class="section features-section" id="features">
     <div class="container">
       <div class="section-header text-center">
-        <div class="section-tag">PURE PERFORMANCE</div>
-        <h2 class="section-title">Engineered Without Compromise</h2>
+        <div class="section-tag">UNCOMPROMISED SPEED</div>
+        <h2 class="section-title">Architected for Developers</h2>
         <p class="section-subtitle">
           Built from the ground up to eliminate dependency rot, bloated memory footprints, 
           and unstable terminal abstractions.
@@ -588,7 +639,7 @@ Tests are passing, retry queue configured. Ready to ship.</code></pre>
   <section class="section benchmarks-section" id="benchmarks">
     <div class="container">
       <div class="section-header text-center">
-        <div class="section-tag">UNBIASED BENCHMARKS</div>
+        <div class="section-tag">BENCHMARK MATRIX</div>
         <h2 class="section-title">Lunar vs The Heavyweight Giants</h2>
         <p class="section-subtitle">
           Why waste gigabytes of disk and hundreds of milliseconds waiting for your AI CLI to start?
@@ -660,7 +711,7 @@ Tests are passing, retry queue configured. Ready to ship.</code></pre>
   <section class="section quickstart-section" id="quickstart">
     <div class="container">
       <div class="section-header text-center">
-        <div class="section-tag">ORBIT INITIALIZATION</div>
+        <div class="section-tag">INITIALIZE ORBIT</div>
         <h2 class="section-title">Get Running in 30 Seconds</h2>
         <p class="section-subtitle">
           Zero installation friction. Run directly with Node.js 18+ or install globally.
@@ -831,7 +882,9 @@ cd Lunar-CLI</code>
     <div class="container footer-content">
       <div class="footer-left">
         <div class="brand">
-          <span class="brand-moon">🌙</span>
+          <div class="brand-crest">
+            <span class="brand-moon">🌙</span>
+          </div>
           <span class="brand-name">LUNAR CLI</span>
         </div>
         <p class="footer-tagline">
